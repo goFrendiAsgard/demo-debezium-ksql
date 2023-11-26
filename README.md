@@ -72,6 +72,8 @@ DELETE FROM sample_table WHERE id=3;
 
 Check out `http://localhost:8085` and see the topics. There will be a topic named `postgres.public.sample_table`
 
+![](topics.png)
+
 # KSQL
 
 ```bash
@@ -84,7 +86,7 @@ Then run the following:
 ksql http://ksqldb-server:8088
 ```
 
-Create stream
+Create stream, notice that we need to to create a structure that match or kafka topic value.
 
 ```sql
 CREATE STREAM sample_table_stream (
@@ -108,8 +110,19 @@ CREATE STREAM sample_table_stream (
 );
 ```
 
+Try to show all data.
+
+```sql
+SELECT payload->after->id, payload->after->name, payload->after->age, payload->after->created_at
+FROM sample_table_stream 
+```
+
+Or only the latest changes
+
 ```sql
 SELECT payload->after->id, payload->after->name, payload->after->age, payload->after->created_at
 FROM sample_table_stream 
 EMIT CHANGES;
 ```
+
+![](ksql-insert.png)
